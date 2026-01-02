@@ -1,0 +1,45 @@
+Frequently Asked Questions
+
+1. What is the Full Stack Development Bootcamp about?
+The bootcamp introduces learners to full-stack web development concepts, focusing on both frontend and backend technologies using the MERN stack (MongoDB, Express, React, Node.js). It is designed to help participants understand how complete digital solutions are built.
+
+2. Who can join this bootcamp?
+The bootcamp is open to students and early-career learners with basic programming knowledge who want structured exposure to web technologies and full-stack development.
+
+3. Is prior experience required?
+Basic programming knowledge is recommended. You do not need prior experience in full-stack development, but familiarity with programming fundamentals will help you follow the course more easily.
+
+4. Are there any projects included in the bootcamp?
+There is no formal project assigned during the bootcamp. Participants are encouraged to practice coding and apply the concepts they learn through exercises and examples provided during sessions.
+
+5. Can this bootcamp lead to internship opportunities?
+Yes. Participants who successfully complete the bootcamp and demonstrate strong performance may be considered for internships at VLED and Annam.AI. Interns may work on initiatives in areas like digital agriculture and education technology.
+
+6. How long is the bootcamp?
+The bootcamp duration is determined by the curriculum schedule. Each session provides theoretical knowledge and coding practice opportunities.
+
+7. How can I register?
+Registration details are available on the bootcamp website. Make sure to complete your registration before December 15, 2025.
+
+8. Onboarding session
+A zoom meeting link will be sent after registration to the bootcamp in which the team will help the participants on navigating through the ViBe platform.
+
+9. How to fill consent form?
+Download the form from the link given in the zoho forms and fill out the details and attach your digital signature in it and submit it in the same onboarding form.
+
+10. How to join Discussion forum?
+We have a Discord channel exclusively for Discussion of which the link is available in the Full Stack Development Bootcamp webpage and in the course details in the ViBe platform.
+
+
+11. Support session announcement details?
+We will be having support sessions as zoom meetings during the course if any grievances should arise.
+
+12. Will recordings of the sessions be available?
+If you miss a live session, alternative sessions may be organized, and participants will receive communication regarding these arrangements.
+
+
+13. Is the bootcamp free?
+Yes, the bootcamp is designed to provide learning opportunities without any fees.
+
+14. Is there a tutorial available for the platform?
+Yes, the bootcamp tutorial is available in the ViBe homepage and in youtube: https://www.youtube.com/watch?v=8ytNdYlK-BU

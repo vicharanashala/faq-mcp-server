@@ -1,6 +1,6 @@
 #!/bin/bash
 # Run FAQ MCP Server
 
-cd /home/ubuntu/Kshitij/Bootcamp-mcp
+cd /home/ubuntu/Kshitij/Chat-bot/faq-mcp-server
 source venv/bin/activate
-python mcp-server/server.py
+./venv/bin/python faq.py

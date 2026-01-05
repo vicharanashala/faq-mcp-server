@@ -115,7 +115,4 @@ This will regenerate all embeddings in MongoDB using the configured model.
 - **Embeddings**: BAAI/bge-large-en-v1.5 (sentence-transformers)
 - **Search**: Hybrid TF-IDF + Semantic
 - **Language**: Python 3.12+
-
-## Repository
-
-https://github.com/vicharanashala/faq-mcp-server
+---

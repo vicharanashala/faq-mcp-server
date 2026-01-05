@@ -43,15 +43,15 @@ DB_NAME = os.getenv('DB_NAME', "faq_bootcamp")
 COLLECTION_NAME = os.getenv('COLLECTION_NAME', "questions")
 
 # Embedding Configuration
-EMBEDDING_PROVIDER = os.getenv('EMBEDDING_PROVIDER', 'openai')
+EMBEDDING_PROVIDER = os.getenv('EMBEDDING_PROVIDER', 'local')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
-# Use standard BGE model as default if not specified, matching original reference or env
-EMBEDDING_MODEL = os.getenv('EMBEDDING_MODEL', 'text-embedding-3-small')
-EMBEDDING_DIMENSION = int(os.getenv('EMBEDDING_DIMENSION', '1536'))
+# Use BGE-large-en-v1.5 as default embedding model
+EMBEDDING_MODEL = os.getenv('EMBEDDING_MODEL', 'BAAI/bge-large-en-v1.5')
+EMBEDDING_DIMENSION = int(os.getenv('EMBEDDING_DIMENSION', '1024'))
 
 # Local embedding model (for sentence-transformers)
-LOCAL_EMBEDDING_MODEL = 'all-MiniLM-L6-v2'
+LOCAL_EMBEDDING_MODEL = os.getenv('LOCAL_EMBEDDING_MODEL', 'BAAI/bge-large-en-v1.5')
 
 # Search Configuration
 TFIDF_WEIGHT = float(os.getenv('TFIDF_WEIGHT', '0.3'))

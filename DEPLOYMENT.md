@@ -6,9 +6,9 @@ This guide walks you through setting up automated Docker Hub deployment for the 
 
 ## Prerequisites
 
-- GitHub repository: `vicharanashala/faq-mcp-server`
+- GitHub repository: `kshitijpandey3h/faq-mcp-server`
 - Docker Hub account
-- Docker Hub repository created: `vicharanashala/faq-mcp-server`
+- Docker Hub repository created: `kshitijpandey3h/faq-mcp-server`
 
 ## Step 1: Create Docker Hub Access Token
 
@@ -87,7 +87,7 @@ git push origin v1.0.0
 ### Check Docker Hub
 
 1. Go to [Docker Hub](https://hub.docker.com)
-2. Navigate to your repository: `vicharanashala/faq-mcp-server`
+2. Navigate to your repository: `kshitijpandey3h/faq-mcp-server`
 3. Verify the new image tags appear:
    - `latest`
    - `1.0.0` (or your version)
@@ -97,17 +97,17 @@ git push origin v1.0.0
 
 ```bash
 # Pull the image
-docker pull vicharanashala/faq-mcp-server:latest
+docker pull kshitijpandey3h/faq-mcp-server:latest
 
 # Verify multi-platform support
-docker buildx imagetools inspect vicharanashala/faq-mcp-server:latest
+docker buildx imagetools inspect kshitijpandey3h/faq-mcp-server:latest
 
 # Run the container
 docker run -d \
   --name faq-mcp-test \
   -p 9010:9010 \
   -e MONGODB_URI="your-mongodb-uri" \
-  vicharanashala/faq-mcp-server:latest
+  kshitijpandey3h/faq-mcp-server:latest
 
 # Check logs
 docker logs faq-mcp-test -f
@@ -151,7 +151,7 @@ docker rm faq-mcp-test
 **Problem**: Build succeeds but image doesn't appear
 
 **Solution**:
-- Check the Docker Hub repository name matches: `vicharanashala/faq-mcp-server`
+- Check the Docker Hub repository name matches: `kshitijpandey3h/faq-mcp-server`
 - Verify the repository exists and is public (or you have access)
 - Check the workflow logs for push errors
 

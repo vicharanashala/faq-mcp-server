@@ -1,7 +1,7 @@
 # FAQ MCP Server
 
-[![Docker Hub Publish](https://github.com/vicharanashala/faq-mcp-server/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/vicharanashala/faq-mcp-server/actions/workflows/docker-publish.yml)
-[![Docker Hub](https://img.shields.io/docker/v/vicharanashala/faq-mcp-server?label=Docker%20Hub)](https://hub.docker.com/r/vicharanashala/faq-mcp-server)
+[![Docker Hub Publish](https://github.com/kshitijpandey3h/faq-mcp-server/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/kshitijpandey3h/faq-mcp-server/actions/workflows/docker-publish.yml)
+[![Docker Hub](https://img.shields.io/docker/v/kshitijpandey3h/faq-mcp-server?label=Docker%20Hub)](https://hub.docker.com/r/kshitijpandey3h/faq-mcp-server)
 
 Intelligent FAQ search system using FastMCP framework with hybrid TF-IDF and semantic embeddings.
 
@@ -51,7 +51,7 @@ Pull and run the latest image from Docker Hub:
 
 ```bash
 # Pull the latest image
-docker pull vicharanashala/faq-mcp-server:latest
+docker pull kshitijpandey3h/faq-mcp-server:latest
 
 # Run with environment variables
 docker run -d \
@@ -60,7 +60,7 @@ docker run -d \
   -e MONGODB_URI="your-mongodb-connection-string" \
   -e DB_NAME="faq_bootcamp" \
   -e COLLECTION_NAME="questions" \
-  vicharanashala/faq-mcp-server:latest
+  kshitijpandey3h/faq-mcp-server:latest
 
 # View logs
 docker logs faq-mcp-server -f

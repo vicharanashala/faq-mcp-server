@@ -111,13 +111,13 @@ async def generate_question_id(category: str) -> str:
         client.close()
 
 
-def generate_csv(data: List[Dict[str, Any]], columns: List[str]) -> str:
+'''def generate_csv(data: List[Dict[str, Any]], columns: List[str]) -> str:
     """Generate CSV string from data."""
     output = StringIO()
     writer = csv.DictWriter(output, fieldnames=columns)
     writer.writeheader()
     writer.writerows(data)
-    return output.getvalue()
+    return output.getvalue()'''
 
 
 # ============================================================================
@@ -274,185 +274,185 @@ async def add_faq(
         client.close()
 
 
-@mcp.tool()
-async def last_n(n: int = 10) -> str:
-    """
-    Get the last n FAQs added to the database as CSV.
-    
-    Returns a CSV string with columns: Question, Answer, Added By
-    The FAQs are sorted by creation date (most recent first).
-    
-    Args:
-        n: Number of recent FAQs to retrieve (default: 10, max: 100)
-    
-    Returns:
-        CSV string with Question, Answer, and Added By columns
-    """
-    # Validate n
-    if n < 1:
-        n = 1
-    elif n > 100:
-        n = 100
-    
-    collection, client = get_mongodb_collection()
-    
-    try:
-        # Get last n FAQs sorted by created_at descending
-        faqs = list(collection.find(
-            {},
-            {"question": 1, "answer": 1, "added_by": 1, "created_at": 1}
-        ).sort("created_at", -1).limit(n))
-        
-        # Prepare data for CSV
-        csv_data = []
-        for faq in faqs:
-            csv_data.append({
-                "Question": faq.get("question", ""),
-                "Answer": faq.get("answer", ""),
-                "Added By": faq.get("added_by", "system")
-            })
-        
-        # Generate CSV
-        if not csv_data:
-            return "No FAQs found in database"
-        
-        # Save to file instead of returning string
-        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-        filename = f"recent_{n}_faqs_{timestamp}.csv"
-        file_path = os.path.join("/app/downloads", filename)
-        
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        
-        # Save to file instead of returning string
-        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-        filename = f"recent_{n}_faqs_{timestamp}.csv"
-        file_path = os.path.join("/app/downloads", filename)
-        
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        
-        with open(file_path, 'w', newline='') as f:
-            writer = csv.DictWriter(f, fieldnames=["Question", "Answer", "Added By"])
-            writer.writeheader()
-            writer.writerows(csv_data)
-        
-        return f"File generated successfully: [Download CSV](/images/downloads/{filename})"
-    
-    except Exception as e:
-        return f"Error retrieving FAQs: {str(e)}"
-    finally:
-        client.close()
+# @mcp.tool()
+# async def last_n(n: int = 10) -> str:
+#     """
+#     Get the last n FAQs added to the database as CSV.
+#     
+#     Returns a CSV string with columns: Question, Answer, Added By
+#     The FAQs are sorted by creation date (most recent first).
+#     
+#     Args:
+#         n: Number of recent FAQs to retrieve (default: 10, max: 100)
+#     
+#     Returns:
+#         CSV string with Question, Answer, and Added By columns
+#     """
+#     # Validate n
+#     if n < 1:
+#         n = 1
+#     elif n > 100:
+#         n = 100
+#     
+#     collection, client = get_mongodb_collection()
+#     
+#     try:
+#         # Get last n FAQs sorted by created_at descending
+#         faqs = list(collection.find(
+#             {},
+#             {"question": 1, "answer": 1, "added_by": 1, "created_at": 1}
+#         ).sort("created_at", -1).limit(n))
+#         
+#         # Prepare data for CSV
+#         csv_data = []
+#         for faq in faqs:
+#             csv_data.append({
+#                 "Question": faq.get("question", ""),
+#                 "Answer": faq.get("answer", ""),
+#                 "Added By": faq.get("added_by", "system")
+#             })
+#         
+#         # Generate CSV
+#         if not csv_data:
+#             return "No FAQs found in database"
+#         
+#         # Save to file instead of returning string
+#         timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+#         filename = f"recent_{n}_faqs_{timestamp}.csv"
+#         file_path = os.path.join("/app/downloads", filename)
+#         
+#         # Ensure directory exists
+#         os.makedirs(os.path.dirname(file_path), exist_ok=True)
+#         
+#         # Save to file instead of returning string
+#         timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+#         filename = f"recent_{n}_faqs_{timestamp}.csv"
+#         file_path = os.path.join("/app/downloads", filename)
+#         
+#         # Ensure directory exists
+#         os.makedirs(os.path.dirname(file_path), exist_ok=True)
+#         
+#         with open(file_path, 'w', newline='') as f:
+#             writer = csv.DictWriter(f, fieldnames=["Question", "Answer", "Added By"])
+#             writer.writeheader()
+#             writer.writerows(csv_data)
+#         
+#         return f"File generated successfully: [Download CSV](/images/downloads/{filename})"
+#     
+#     except Exception as e:
+#         return f"Error retrieving FAQs: {str(e)}"
+#     finally:
+#         client.close()
 
 
-@mcp.tool()
-async def download_data() -> str:
-    """
-    Download all FAQ data from MongoDB as CSV.
-    
-    Exports all FAQs with all fields including:
-    - Question ID
-    - Question
-    - Answer
-    - Category
-    - Added By
-    - Created At
-    
-    Returns:
-        Link to download containing all FAQ data
-    """
-    collection, client = get_mongodb_collection()
-    
-    try:
-        # Get all FAQs
-        faqs = list(collection.find(
-            {},
-            {
-                "question_id": 1,
-                "question": 1,
-                "answer": 1,
-                "category": 1,
-                "added_by": 1,
-                "created_at": 1
-            }
-        ).sort("question_id", 1))
-        
-        # Prepare data for CSV
-        csv_data = []
-        for faq in faqs:
-            csv_data.append({
-                "Question ID": faq.get("question_id", ""),
-                "Question": faq.get("question", ""),
-                "Answer": faq.get("answer", ""),
-                "Category": faq.get("category", ""),
-                "Added By": faq.get("added_by", "system"),
-                "Created At": faq.get("created_at", "")
-            })
-        
-        # Generate CSV
-        if not csv_data:
-            return "No FAQs found in database"
-        
-        columns = ["Question ID", "Question", "Answer", "Category", "Added By", "Created At"]
-        
-        # Save to file
-        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-        filename = f"all_faqs_{timestamp}.csv"
-        file_path = os.path.join("/app/downloads", filename)
-        
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        
-        # Save to file
-        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-        filename = f"all_faqs_{timestamp}.csv"
-        file_path = os.path.join("/app/downloads", filename)
-        
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        
-        with open(file_path, 'w', newline='') as f:
-            writer = csv.DictWriter(f, fieldnames=columns)
-            writer.writeheader()
-            writer.writerows(csv_data)
-        
-        return f"File generated successfully: [Download CSV](/images/downloads/{filename})"
-    
-    except Exception as e:
-        return f"Error downloading data: {str(e)}"
-    finally:
-        client.close()
-
-
-from fastmcp import Context
-
-@mcp.tool()
-async def debug_context(ctx: Context) -> str:
-    """
-    Debug tool to inspect the MCP request context.
-    Returns the string representation of the context.
-    """
-    context_info = []
-    
-    # Inspect context attributes
-    for attr in dir(ctx):
-        if not attr.startswith('_'):
-            try:
-                val = getattr(ctx, attr)
-                context_info.append(f"{attr}: {val}")
-            except Exception as e:
-                context_info.append(f"{attr}: <error: {e}>")
-    
-    # Try to access session/client info specifically if available
-    try:
-        if hasattr(ctx, 'session'):
-             context_info.append(f"Session: {ctx.session}")
-        if hasattr(ctx, 'meta'):
-             context_info.append(f"Meta: {ctx.meta}")
-    except:
-        pass
-        
-    return "\n".join(context_info)
+# @mcp.tool()
+# async def download_data() -> str:
+#     """
+#     Download all FAQ data from MongoDB as CSV.
+#     
+#     Exports all FAQs with all fields including:
+#     - Question ID
+#     - Question
+#     - Answer
+#     - Category
+#     - Added By
+#     - Created At
+#     
+#     Returns:
+#         Link to download containing all FAQ data
+#     """
+#     collection, client = get_mongodb_collection()
+#     
+#     try:
+#         # Get all FAQs
+#         faqs = list(collection.find(
+#             {},
+#             {
+#                 "question_id": 1,
+#                 "question": 1,
+#                 "answer": 1,
+#                 "category": 1,
+#                 "added_by": 1,
+#                 "created_at": 1
+#             }
+#         ).sort("question_id", 1))
+#         
+#         # Prepare data for CSV
+#         csv_data = []
+#         for faq in faqs:
+#             csv_data.append({
+#                 "Question ID": faq.get("question_id", ""),
+#                 "Question": faq.get("question", ""),
+#                 "Answer": faq.get("answer", ""),
+#                 "Category": faq.get("category", ""),
+#                 "Added By": faq.get("added_by", "system"),
+#                 "Created At": faq.get("created_at", "")
+#             })
+#         
+#         # Generate CSV
+#         if not csv_data:
+#             return "No FAQs found in database"
+#         
+#         columns = ["Question ID", "Question", "Answer", "Category", "Added By", "Created At"]
+#         
+#         # Save to file
+#         timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+#         filename = f"all_faqs_{timestamp}.csv"
+#         file_path = os.path.join("/app/downloads", filename)
+#         
+#         # Ensure directory exists
+#         os.makedirs(os.path.dirname(file_path), exist_ok=True)
+#         
+#         # Save to file
+#         timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+#         filename = f"all_faqs_{timestamp}.csv"
+#         file_path = os.path.join("/app/downloads", filename)
+#         
+#         # Ensure directory exists
+#         os.makedirs(os.path.dirname(file_path), exist_ok=True)
+#         
+#         with open(file_path, 'w', newline='') as f:
+#             writer = csv.DictWriter(f, fieldnames=columns)
+#             writer.writeheader()
+#             writer.writerows(csv_data)
+#         
+#         return f"File generated successfully: [Download CSV](/images/downloads/{filename})"
+#     
+#     except Exception as e:
+#         return f"Error downloading data: {str(e)}"
+#     finally:
+#         client.close()
+# 
+# 
+# from fastmcp import Context
+# 
+# @mcp.tool()
+# async def debug_context(ctx: Context) -> str:
+#     """
+#     Debug tool to inspect the MCP request context.
+#     Returns the string representation of the context.
+#     """
+#     context_info = []
+#     
+#     # Inspect context attributes
+#     for attr in dir(ctx):
+#         if not attr.startswith('_'):
+#             try:
+#                 val = getattr(ctx, attr)
+#                 context_info.append(f"{attr}: {val}")
+#             except Exception as e:
+#                 context_info.append(f"{attr}: <error: {e}>")
+#     
+#     # Try to access session/client info specifically if available
+#     try:
+#         if hasattr(ctx, 'session'):
+#              context_info.append(f"Session: {ctx.session}")
+#         if hasattr(ctx, 'meta'):
+#              context_info.append(f"Meta: {ctx.meta}")
+#     except:
+#         pass
+#         
+#     return "\n".join(context_info)
 
 
 # ============================================================================
@@ -464,8 +464,8 @@ if __name__ == "__main__":
     print("=" * 60)
     print("Available tools:")
     print("  - add_faq: Add new FAQ with user tracking")
-    print("  - last_n: Get last n FAQs as CSV")
-    print("  - download_data: Export all FAQs as CSV")
-    print("  - debug_context: Inspect request context")
+    print("  # - last_n: Get last n FAQs as CSV (Disabled)")
+    print("  # - download_data: Export all FAQs as CSV (Disabled)")
+    print("  # - debug_context: Inspect request context (Disabled)")
     print("=" * 60)
     mcp.run(transport='streamable-http', host=SERVER_HOST, port=SERVER_PORT)

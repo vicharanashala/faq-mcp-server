@@ -12,21 +12,38 @@ Intelligent FAQ search system using FastMCP framework with hybrid TF-IDF and sem
 - 📊 **54 FAQs**: Bootcamp, ViBe platform, attendance, certification
 - ⚡ **FastMCP**: Clean architecture with HTTP API
 - 🐳 **Dockerized**: Easy deployment with Docker Compose
-- 🔌 **Port 9010**: Streamable-HTTP transport
+- 🔌 **Port 9010**: FAQ Search Server
+- 🛠️ **Port 9011**: Admin Server (File management & uploads)
+
+## Project Structure
+
+```
+faq-mcp-server/
+├── src/
+│   ├── faq.py                   # FAQ Search MCP Server
+│   └── admin_server.py          # Admin MCP Server (Add/Download Data)
+├── scripts/
+│   ├── regenerate_embeddings.py # Embedding generation script
+│   ├── add_new_faq.py           # Manual FAQ addition tool
+│   └── deploy.sh                # Deployment utility
+├── FAQ_Data/                    # Source data
+├── Dockerfile                   # FAQ Server Image
+├── Dockerfile.admin             # Admin Server Image
+├── docker-compose.yml           # FAQ Server Compose
+├── docker-compose-admin.yml     # Admin Server Compose
+└── README.md                    # Documentation
+```
 
 ## Quick Start
 
 ### Using Docker (Recommended)
 
 ```bash
-# Start the server
+# Start the servers
 docker compose up -d
 
 # View logs
 docker logs faq-mcp-server -f
-
-# Stop the server
-docker compose down
 ```
 
 ### Manual Setup
@@ -39,139 +56,79 @@ pip install -r requirements.txt sentence-transformers
 cp .env.example .env
 # Edit .env with your MongoDB URI
 
-# Run the server
-python faq.py
-```
+# Run the FAQ server
+python src/faq.py
 
-## Docker Hub Deployment
-
-### Using Pre-built Image
-
-Pull and run the latest image from Docker Hub:
-
-```bash
-# Pull the latest image
-docker pull kshitijpandey3h/faq-mcp-server:latest
-
-# Run with environment variables
-docker run -d \
-  --name faq-mcp-server \
-  -p 9010:9010 \
-  -e MONGODB_URI="your-mongodb-connection-string" \
-  -e DB_NAME="faq_bootcamp" \
-  -e COLLECTION_NAME="questions" \
-  kshitijpandey3h/faq-mcp-server:latest
-
-# View logs
-docker logs faq-mcp-server -f
-```
-
-### Available Tags
-
-- `latest` - Most recent build from main branch
-- `v1.0.0`, `v1.0`, `v1` - Semantic version tags
-- `main-<sha>` - Specific commit builds
-
-### Multi-Platform Support
-
-Images are available for:
-- `linux/amd64` (x86_64)
-- `linux/arm64` (ARM64/Apple Silicon)
-
-### Automated Deployment
-
-This project uses GitHub Actions for automated Docker Hub deployment:
-
-1. **Tag-based Release**: Push a version tag to trigger deployment
-   ```bash
-   git tag v1.0.0
-   git push origin v1.0.0
-   ```
-
-2. **Manual Trigger**: Use GitHub Actions workflow dispatch
-
-#### Required GitHub Secrets
-
-To enable automated deployment, configure these secrets in your GitHub repository:
-
-| Secret | Description |
-|--------|-------------|
-| `DOCKERHUB_USERNAME` | Your Docker Hub username |
-| `DOCKERHUB_TOKEN` | Docker Hub access token ([create here](https://hub.docker.com/settings/security)) |
-
-## Configuration
-
-### Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MONGODB_URI` | - | MongoDB connection (required) |
-| `DB_NAME` | `faq_bootcamp` | Database name |
-| `COLLECTION_NAME` | `questions` | Collection name |
-| `EMBEDDING_PROVIDER` | `local` | Embedding provider (local/openai/anthropic) |
-| `EMBEDDING_MODEL` | `BAAI/bge-large-en-v1.5` | Embedding model |
-| `EMBEDDING_DIMENSION` | `1024` | Embedding dimension |
-| `TFIDF_WEIGHT` | `0.3` | TF-IDF weight (0-1) |
-| `EMBEDDING_WEIGHT` | `0.7` | Embedding weight (0-1) |
-| `SERVER_PORT` | `9010` | Server port |
-
-## Project Structure
-
-```
-faq-mcp-server/
-├── faq.py                       # Single-file MCP server
-├── regenerate_embeddings.py     # Embedding generation script
-├── requirements.txt             # Python dependencies
-├── Dockerfile                   # Docker image definition
-├── docker-compose.yml           # Docker Compose configuration
-├── .env                         # Environment configuration
-├── FAQ Data/                    # FAQ source data
-│   └── Unified_FAQ.txt
-└── README.md                    # Documentation
+# Run the Admin server
+python src/admin_server.py
 ```
 
 ## Usage
 
-### MCP Tool
+### MCP Tools
 
-The server exposes a `search_faq` tool:
+1. **`search_faq`** (Port 9010):
+   - Search specifically for relevant FAQs.
+   - Example: "How do I register?"
 
-```python
-search_faq(query: str, top_k: int = 3) -> List[FAQResult]
-```
+2. **`add_faq`** (Port 9011):
+   - Add new QA pairs to the database.
 
-**Example queries:**
-- "How do I register for the bootcamp?"
-- "Can I use mobile for ViBe?"
-- "What are the attendance requirements?"
-- "How do I get my certificate?"
+3. **`download_data`** (Port 9011):
+   - Download all FAQ data as a CSV file.
 
-### With LibreChat
+4. **`last_n`** (Port 9011):
+   - Download the last N added FAQs.
 
-Configure in `librechat.yaml`:
+### LibreChat Configuration
+
+Add the following to your `librechat.yaml`:
 
 ```yaml
 mcpServers:
   faq-server:
     type: streamable-http
     url: http://host.docker.internal:9010/mcp
+  admin-server:
+    type: streamable-http
+    url: http://host.docker.internal:9011/mcp
+    headers:
+      X-User-Name: "{{LIBRECHAT_USER_NAME}}"
+      X-User-Email: "{{LIBRECHAT_USER_EMAIL}}"
+      X-User-Id: "{{LIBRECHAT_USER_ID}}"
 ```
 
-## Regenerating Embeddings
+## Deployment
 
-If you update the FAQ data or change the embedding model:
+### Docker Hub
+
+Images are automatically built and pushed to Docker Hub via GitHub Actions.
+
+- **Repository**: `kshitijpandey3h/faq-mcp-server`
+- **Tags**: `latest`, `v*.*.*`, `main-<sha>`
+
+### GitHub Actions Setup
+
+To enable automated deployment:
+
+1. Go to repository **Settings** → **Secrets and variables** → **Actions**.
+2. Add the following secrets:
+   - `DOCKERHUB_USERNAME`: Your Docker Hub username.
+   - `DOCKERHUB_TOKEN`: Docker Hub Access Token (Read & Write).
+
+### Triggering a Release
+
+Push a tag to trigger a build and release:
 
 ```bash
-python regenerate_embeddings.py
+git tag v1.0.0
+git push origin v1.0.0
 ```
-
-This will regenerate all embeddings in MongoDB using the configured model.
 
 ## Tech Stack
 
 - **Framework**: FastMCP 2.14.2
 - **Database**: MongoDB
-- **Embeddings**: BAAI/bge-large-en-v1.5 (sentence-transformers)
+- **Embeddings**: BAAI/bge-large-en-v1.5
 - **Search**: Hybrid TF-IDF + Semantic
 - **Language**: Python 3.12+
----

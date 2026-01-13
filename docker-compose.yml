@@ -21,6 +21,29 @@ services:
     networks:
       - mcp-network
 
+  admin-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.admin
+    image: vicharanashala/faq_vsakha_admin:latest
+    container_name: admin-mcp-server
+    ports:
+      - "9011:9011"
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+      - DB_NAME=${DB_NAME:-faq_bootcamp}
+      - COLLECTION_NAME=${COLLECTION_NAME:-questions}
+      - SERVER_HOST=${SERVER_HOST:-0.0.0.0}
+      - ADMIN_SERVER_PORT=${ADMIN_SERVER_PORT:-9011}
+      - DEFAULT_ADMIN_USER=Kshitij Pandey
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
+      - M_KEY=${M_KEY}
+    restart: unless-stopped
+    networks:
+      - mcp-network
+    volumes:
+      - ../ace-client/images/downloads:/app/downloads
+
 networks:
   mcp-network:
     driver: bridge

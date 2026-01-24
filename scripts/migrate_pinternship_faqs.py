@@ -32,10 +32,10 @@ EMBEDDING_MODEL = 'BAAI/bge-large-en-v1.5'
 # Check if running in Docker container (script is in /app/)
 if Path('/app/FAQ_Data').exists():
     # Running in Docker container
-    FAQ_DATA_FILE = Path('/app/FAQ_Data/new_pinternship_2026-01-19/pinternship_faqs.json')
+    FAQ_DATA_FILE = Path('/app/FAQ_Data/new_pinternship_2026-01-24/pinternship_faqs.json')
 else:
     # Running locally (relative to script location)
-    FAQ_DATA_FILE = Path(__file__).parent.parent / 'FAQ_Data' / 'new_pinternship_2026-01-19' / 'pinternship_faqs.json'
+    FAQ_DATA_FILE = Path(__file__).parent.parent / 'FAQ_Data' / 'new_pinternship_2026-01-24' / 'pinternship_faqs.json'
 
 
 def load_faq_data():
@@ -130,9 +130,10 @@ def main():
         # Generate question ID
         question_id = generate_question_id(category, category_counters[category])
         
-        # Generate embedding
-        question_text = faq['question']
-        embedding = model.encode(question_text).tolist()
+        # Generate embedding from combined question + answer
+        # This provides richer semantic context for better search accuracy
+        combined_text = f"{faq['question']} {faq['answer']}"
+        embedding = model.encode(combined_text).tolist()
         
         # Create document
         doc = {
